@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "pwa-weather.fullname" . }}-test-connection"
+  labels:
+    {{- include "pwa-weather.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['sh']
+      args:  ['/test-connection.sh']
+      volumeMounts:
+      - name: "{{ include "pwa-weather.fullname" . }}-test-connection-volume"
+        mountPath: /test-connection.sh
+  volumes:
+    - name: "{{ include "pwa-weather.fullname" . }}-test-connection-volume"
+      configMap:
+        name: "{{ include "pwa-weather.fullname" . }}-test-connection-shell-script"
+  restartPolicy: Never
