@@ -1,0 +1,12 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "pwa-weather.fullname" . }}
+  labels:
+    {{- include "pwa-weather.labels" . | nindent 4 }}
+spec:
+    selector:
+      matchLabels:
+        app.kubernetes.io/name: {{ include "pwa-weather.fullname" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    minAvailable: {{ .Values.autoscaling.pdbMinAvailable }}
